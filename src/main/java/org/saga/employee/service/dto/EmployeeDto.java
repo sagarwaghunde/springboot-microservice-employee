@@ -1,9 +1,19 @@
 package org.saga.employee.service.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public class EmployeeDto {
 	private Long id;
+	
+	@NotBlank(message = "firstname should not be blank")
 	private String firstname;
+
+	@NotBlank(message = "lastname should not be blank")
 	private String lastname;
+	
+	@NotBlank(message = "Employee email should not be empty")
+	@Email(message = "Email address should be valid")
 	private String email;
 
 	public EmployeeDto() {

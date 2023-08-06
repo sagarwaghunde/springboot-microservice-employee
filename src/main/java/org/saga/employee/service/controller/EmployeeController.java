@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("api/v1/employees")
 public class EmployeeController {
@@ -21,7 +23,7 @@ public class EmployeeController {
 	
 	// Build save employee rest API
 	@PostMapping
-	public ResponseEntity<EmployeeDto> saveEmployee(@RequestBody EmployeeDto employeeDto) {
+	public ResponseEntity<EmployeeDto> saveEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
 		EmployeeDto savedEmployee = employeeService.saveEmployee(employeeDto);
 		return new ResponseEntity<EmployeeDto>(savedEmployee, HttpStatus.CREATED);
 	}
