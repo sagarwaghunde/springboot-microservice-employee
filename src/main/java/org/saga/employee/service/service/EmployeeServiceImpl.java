@@ -19,7 +19,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
 //	private RestTemplate restTemplate;
-	private WebClient webClient;
+//	private WebClient webClient;
+	private APIClient apiClient;
 	
 	@Autowired
 	private EmployeeRepository employeeRepository;
@@ -42,12 +43,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 //		ResponseEntity<DepartmentDto> response = restTemplate.getForEntity("http://localhost:8080/api/v1/departments/" + employee.getDepartmentCode(), DepartmentDto.class);
 //		DepartmentDto departmentDto = response.getBody();
-		DepartmentDto departmentDto = webClient.get()
-			.uri("http://localhost:8080/api/v1/departments/" + employee.getDepartmentCode())
-			.retrieve()
-			.bodyToMono(DepartmentDto.class)
-			.block(); // synchronous call
-		
+//		DepartmentDto departmentDto = webClient.get()
+//			.uri("http://localhost:8080/api/v1/departments/" + employee.getDepartmentCode())
+//			.retrieve()
+//			.bodyToMono(DepartmentDto.class)
+//			.block(); // synchronous call
+
+		DepartmentDto departmentDto = apiClient.getDepartmentByCode(employee.getDepartmentCode());
 		EmployeeDto employeeDto = EmployeeMapper.MAPPER.mapToEmployeeDto(employee);
 		APIResponseDto apiResponseDto = new APIResponseDto(employeeDto, departmentDto);
 		return apiResponseDto;
