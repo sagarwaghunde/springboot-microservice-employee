@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
-	private RestTemplate restTemplate;
+//	private RestTemplate restTemplate;
+	private WebClient webClient;
 	
 	@Autowired
 	private EmployeeRepository employeeRepository;
@@ -37,8 +39,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee employee = employeeRepository.findById(employeId).orElseThrow(
 			() -> new ResourceNotFoundException("Employee", "id", employeId.toString())
 		);
-		ResponseEntity<DepartmentDto> response = restTemplate.getForEntity("http://localhost:8080/api/v1/departments/" + employee.getDepartmentCode(), DepartmentDto.class);
-		DepartmentDto departmentDto = response.getBody();
+		
+//		ResponseEntity<DepartmentDto> response = restTemplate.getForEntity("http://localhost:8080/api/v1/departments/" + employee.getDepartmentCode(), DepartmentDto.class);
+//		DepartmentDto departmentDto = response.getBody();
+		DepartmentDto departmentDto = webClient.get()
+			.uri("http://localhost:8080/api/v1/departments/" + employee.getDepartmentCode())
+			.retrieve()
+			.bodyToMono(DepartmentDto.class)
+			.block(); // synchronous call
+		
 		EmployeeDto employeeDto = EmployeeMapper.MAPPER.mapToEmployeeDto(employee);
 		APIResponseDto apiResponseDto = new APIResponseDto(employeeDto, departmentDto);
 		return apiResponseDto;
