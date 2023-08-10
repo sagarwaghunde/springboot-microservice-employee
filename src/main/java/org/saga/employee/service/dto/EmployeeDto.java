@@ -15,15 +15,18 @@ public class EmployeeDto {
 	@NotBlank(message = "Employee email should not be empty")
 	@Email(message = "Email address should be valid")
 	private String email;
-
+	
+	private String departmentCode;
+	
 	public EmployeeDto() {
 	}
 
-	public EmployeeDto(Long id, String firstname, String lastname, String email) {
+	public EmployeeDto(Long id, String firstname, String lastname, String email, String departmentCode) {
 		this.id = id;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.email = email;
+		this.departmentCode = departmentCode;
 	}
 
 	public Long getId() {
@@ -56,6 +59,14 @@ public class EmployeeDto {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getDepartmentCode() {
+		return departmentCode;
+	}
+
+	public void setDepartmentCode(String departmentCode) {
+		this.departmentCode = departmentCode;
 	}
 
 }

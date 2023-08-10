@@ -1,5 +1,6 @@
 package org.saga.employee.service.controller;
 
+import org.saga.employee.service.dto.APIResponseDto;
 import org.saga.employee.service.dto.EmployeeDto;
 import org.saga.employee.service.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,8 @@ public class EmployeeController {
 	
 	// Build get employee rest API
 	@GetMapping("{id}")
-	public ResponseEntity<EmployeeDto> getEmployee(@PathVariable("id") Long employeeId) {
-		EmployeeDto employeeDto = employeeService.getEmployeeById(employeeId);
-		return ResponseEntity.ok(employeeDto);
+	public ResponseEntity<APIResponseDto> getEmployee(@PathVariable("id") Long employeeId) {
+		APIResponseDto apiResponseDto = employeeService.getEmployeeById(employeeId);
+		return ResponseEntity.ok(apiResponseDto);
 	}
 }
