@@ -8,6 +8,8 @@ import org.saga.employee.service.exception.EmailAlreadyExistsException;
 import org.saga.employee.service.exception.ResourceNotFoundException;
 import org.saga.employee.service.mapper.EmployeeMapper;
 import org.saga.employee.service.repository.EmployeeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,13 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
+	
 	@Autowired
 //	private RestTemplate restTemplate;
 	private WebClient webClient;
@@ -38,9 +43,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return EmployeeMapper.MAPPER.mapToEmployeeDto(savedEntity);
 	}
 
-	@CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
+//	@CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
+	@Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
 	@Override
 	public APIResponseDto getEmployeeById(Long employeId) {
+		LOGGER.info("inside getEmployeeById method");
 		Employee employee = employeeRepository.findById(employeId)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeId.toString()));
 
@@ -57,6 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	public APIResponseDto getDefaultDepartment(Long employeId, Exception exception) {
+		LOGGER.info("inside getDefaultDepartment method");
 		Employee employee = employeeRepository.findById(employeId)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeId.toString()));
 
